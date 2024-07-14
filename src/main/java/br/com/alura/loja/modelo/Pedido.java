@@ -1,82 +1,79 @@
 package br.com.alura.loja.modelo;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "pedidos")
 public class Pedido {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private BigDecimal valorTotal;
-    private LocalDate data = LocalDate.now();
-    @ManyToOne
-    private Cliente cliente;
-    @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> itens = new ArrayList<>();
 
-    public Pedido() {
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(name = "valor_total")
+	private BigDecimal valorTotal;
+	private LocalDate data = LocalDate.now();
 
-    public Pedido(Long id, BigDecimal valorTotal, LocalDate data, Cliente cliente) {
-        this.id = id;
-        this.valorTotal = valorTotal;
-        this.data = data;
-        this.cliente = cliente;
-    }
+	@ManyToOne
+	private Cliente cliente;
+	
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+	private List<ItemPedido> itens = new ArrayList<>();
 
-    public void adicionarItem(ItemPedido item) {
-        item.setPedido(this);
-        this.itens.add(item);
-    }
+	public Pedido() {
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Pedido(Cliente cliente) {
+		this.cliente = cliente;
+	}
+	
+	public void adicionarItem(ItemPedido item) {
+		item.setPedido(this);
+		this.itens.add(item);
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
-    }
+	public BigDecimal getValorTotal() {
+		return valorTotal;
+	}
 
-    public LocalDate getData() {
-        return data;
-    }
+	public void setValorTotal(BigDecimal valorTotal) {
+		this.valorTotal = valorTotal;
+	}
 
-    public void setData(LocalDate data) {
-        this.data = data;
-    }
+	public LocalDate getData() {
+		return data;
+	}
 
-    public Cliente getCliente() {
-        return cliente;
-    }
+	public void setData(LocalDate data) {
+		this.data = data;
+	}
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
+	public Cliente getCliente() {
+		return cliente;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Pedido)) return false;
-        Pedido pedido = (Pedido) o;
-        return Objects.equals(getId(), pedido.getId()) && Objects.equals(getValorTotal(), pedido.getValorTotal()) && Objects.equals(getData(), pedido.getData()) && Objects.equals(getCliente(), pedido.getCliente());
-    }
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getValorTotal(), getData(), getCliente());
-    }
 }
